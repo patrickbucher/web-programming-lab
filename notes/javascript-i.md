@@ -1,25 +1,25 @@
-# Übungsfragen JavaScript I
+# JavaScript Sprachkonzepte I
 
-## Auf welchen Plattformen wird JavaScript verwendet resp. kann verwendet werden?
+## Übungsfragen JavaScript Plenum
+
+### Auf welchen Plattformen wird JavaScript verwendet resp. kann verwendet werden?
 - Nativ in Webbrowsern
 - Auf Datenbanken
 - In Desktopapplikationen
 - In Backend Applikationen
 - In Mobilen Applikationen
 
-## Nenne mindestens drei Eigenschaften von JavaScript und erkläre diese.
+### Nenne mindestens drei Eigenschaften von JavaScript und erkläre diese.
 - Schwache Typisierung (Eine Variable kann auf Objekte verschiedener Typen verweisen)
 - Keine Vorgabe des Paradigmas
 - Wird interpretiert zur Laufzeit
 
-## Finde heraus, welche Firmen die ECMAScript Spezifikation massgäblich mitprägen.
+### Finde heraus, welche Firmen die ECMAScript Spezifikation massgäblich mitprägen.
 - Google
 - Hitachi
 - PayPal
 - Microsoft
 - Mozilla Foundation
-
-# JavaScript Sprachkonzepte I
 
 ## let vs. var
 - Keyword `const` für Konstanten -> muss definiert werden!
@@ -68,7 +68,8 @@ wurde, ist der Wert ”undefined”
 **Best Practice:**
 - `undefined` in Checks für "noch keinen Wert zugewiesen" verwenden
 
-## Object I - Erstellung
+## Object 
+### I - Erstellung
 ```JavaScript
 let myObject = {}; // object literal syntax
 let myObject2 = new Object(); // Object constructor syntax
@@ -79,7 +80,7 @@ Datentypen, weil sie nur einen einzelnen Wert annehmen können
 (String, Nummer, etc.).
 - Objekte werden verwendet um “komplexere” Entitäten zu speichern.
 
-## Object II - Properties
+### II - Properties
 ```JavaScript
 let user = {
 name: 'patrick',
@@ -91,7 +92,7 @@ User Object mit zwei Properties
 - `name` mit dem Wert 'Patrick'
 - `age` mit dem Wert 32 
 
-## Object III – Zugriff auf Properties
+### III – Zugriff auf Properties
 ```JavaScript
 let user = {
 name: 'patrick',
@@ -107,7 +108,7 @@ let bag = {
 console.log(bag.apple); // 5
 ```
 
-## Object IV – Properties prüfen
+### IV – Properties prüfen
 ```JavaScript
 let user = {};
 console.log(user.mysuperduperproperty === undefined);
@@ -119,7 +120,7 @@ console.log('name' in myUser);
 console.log('key' in myUser);
 ```
 
-## Object V – Properties durchgehen
+### V – Properties durchgehen
 ```JavaScript
 let myUser = {
 name: "Patrick", age: 32
@@ -130,7 +131,7 @@ console.log(key);
 }
 ```
 
-## Object VI - Referenzen
+### VI - Referenzen
 Ein grosser Unterschied zwischen Primitives und Objects:
 - Bei Primitives (wie z.B. number, string, etc.) wird der komplette Wert zugewiesen.
 - Bei Non-Primitives werden die Referenzen zugewiesen.
@@ -144,7 +145,7 @@ myUser2.name = 'Andreas';
 console.log(myUser.name); // Andreas
 ```
 
-## Object VII - Klonen
+### VII - Klonen
 ```JavaScript
 let myUser = {
 name: 'Patrick', age: 32
@@ -158,7 +159,7 @@ clone.name = 'Andreas'
 let clone2 = Object.assign({}, clone);
 ```
 
-## Object VIII - Array
+### VIII - Array
 ```JavaScript
 let myArray = [1, 2, 3, 4];
 myArray.push(5);
@@ -241,3 +242,89 @@ console.log(var3 === var2); //Output? -> false
 - Prüfen, ob ein Property mit einem entsprechenden Key existiert via `in`
 - Iterieren über die Keys von einem object `for (let key in obj)`
 - Es gibt verschiedene Arten von Objekten, wie z.B. Array, Date, Error, etc.
+
+# Übungsfragen I
+
+## Was ist der Unterschied zwischen let und var?
+let ist block-scoped und var ist function-scoped. 
+
+## Für was wird typeof() verwendet?
+Um den **momentanen** Datentyp einer Variablen zu bestimmen.
+
+## Was bedeutet schwach typisiert?
+Die Typen werden zur Laufzeit und nicht zur Kompilierzeit bestimmt.
+Der Datentyp eines Bindings kann zur Laufzeit ändern.
+
+## Was ist der Unterschied zwischen == und ===?
+== prüft Werte-Gleichheit während der Typ ignoriert wird, === prüft Werte- und Typen-Gleichheit.
+
+## Was ist der Unterschied zwischen Primitives und Non-Primitives?
+Primitives werden als Werte abgespeichert.
+Non-Primitives werden als Referenz abgespeichert.
+
+# Übungsfragen II
+```JavaScript
+console.log("" + 1 + 0);    // "10" -> String Konkatenation
+console.log("" - 1 + 0 );   // "-1" ->wegen der mathematischen Operation von - 1 wird "" zu 0 gecasted
+console.log(true + false);  // 1 als Zahl -> Begründung siehe oben
+console.log(6 / "3");       // 2 als Zahl -> Begründung siehe oben
+console.log("2" * "3" );    // 6, ''
+console.log(7 / 0);         // Infinity
+console.log(null + 1);      // 1 -> null wird gemäss Spezifikation zu number konvertiert und ist gemäss Spezifikation 0
+console.log(undefined + 1); // NaN -> undefined wird NaN und NaN + 1 wird NaN
+```
+
+# Übungsfrage III
+```JavaScript
+console.log(21 == '21'); // true -> keine Typenprüfung
+console.log(undefined == null); // true -> beide beschreiben eine Absenz von Werten 
+console.log(undefined === null); // false -> nicht derselbe Typ
+console.log(21 === 21); // true -> selber Wert, selber Typ
+console.log({} === {}); // false -> nicht dieselbe Referenz
+let obj1 = {name: 'Patrick'};
+let obj2 = {name: 'Patrick'};
+console.log(obj1 == obj2); // false -> nicht dieselbe Referenz, auch bei Wertevergleich
+console.log(obj1 === obj2); // false -> nicht dieselbe Referenz
+let obj3 = obj2;
+console.log(obj3 === obj2); // true -> dieselbe Referenz
+console.log(NaN === NaN); // false -> lässt sich nicht vergleichen
+console.log(true == {valueOf: function() {return "1"}}); // true -> 1 == "1"
+```
+
+# Übungsaufgabe
+
+```JavaScript
+// Vor dem Funktionsaufruf
+let menu = { width: 200, height: 300, title: "Titel" };
+multiplyNumeric(menu);
+// Nach dem Funktionsaufruf
+menu = { width: 400, height: 600, title: "Titel" };
+```
+
+Schreibe eine Funktion, welche alle number Properties um 2 multipliziert (generisch!).  
+Branch: multiproperties  
+- Beachte, dass die Funktion nichts zurückgibt!
+
+# Zusatz: Übungsfrage
+```JavaScript
+let name = 'Patrick';
+console.log( `hello ${1}` ); // ?
+console.log( `hello ${"name"}` ); // ?
+console.log( `hello ${name}` ); // ?
+// Funktioniert das?
+const user = { name: "John" };
+user.name = "Pete";
+```
+
+# Zusatz: Übungsaufgabe
+```JavaScript
+let salaries = {
+patrick: 100000,
+andreas: 110000,
+gwendolin: 91000,
+nayoona: 45000
+};
+```
+
+Schreibe eine Funktion, welche alle Löhne des Objektes ‘salaries’ aufsummiert (generisch!).  
+Branch: salaries
