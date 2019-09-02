@@ -259,3 +259,160 @@ pow(3, 2) = 3 * 3 = 9
 pow(3, 3) = 3 * 3 * 3 = 27
 pow(1, 100) = 1 * 1 * ...* 1 = 1
 ```
+
+
+## Closure & Lexical Scope - Intro
+
+### Lexical Scope
+In JavaScript hat jede lauffähige `function` resp. Code-Block `{}` einen
+**lexikalen Scope**.  
+Der Scope besteht aus zwei Aspekten:
+- Environment Record, ein Objekt, welche alle lokalen Variabeln und seine Properties speichert.
+- Eine Referenz auf den äusseren lexikalen Scope.
+D.h. eine Variable ist lediglich ein Property von diesem Environment Record.
+
+```JavaScript
+//                      LexicalEnvironment
+//execution start       <empty>  --outer-->  null
+
+let phrase;             // phrase: undefined
+
+phrase = "Hello";       // phrase: "Hello"
+
+phrase = "Bye";         // phrase: "Bye"
+```
+
+Function Declarations werden sobald der Lexical Scope erstellt wird, entsprechend innerhalb des Scopes erstellt (nicht wie die let Variabeln).
+
+```JavaScript
+//                      LexicalEnvironment
+//execution start       <empty>, say:function  --outer-->  null
+
+let phrase = "Hello";   // phrase: "Hello", say: function
+
+function say(name) {                
+    alert( `${phrase}, ${name}`);
+}
+```
+
+- Zwei lexical scopes: Der Innere (function call) und der äussere (global)
+- Sobald der Code den Zugriff auf eine Variable sucht, prüft er den inneren lexikalen Scope zuerst und erst dann den Äusseren (bis zum Globalen).
+
+```JavaScript
+//                      LexicalEnvironment
+//execution start       <empty>, say:function  --outer-->  null
+
+let phrase = "Hello";   // phrase: "Hello", say: function
+
+function say(name) {                
+    alert( `${phrase}, ${name}`);   // name: "John" --outer--> // say:function, phrase: "Hello" --outer--> null
+}
+
+say("John"); // Hello, John
+```
+
+### Closure
+Eine Closure ist eine function, welche sich an äussere Variabeln erinnert und auf diese entsprechend zugreifen kann.
+- Deshalb können in JavaScript alle Functions Closures sein.
+- Exemplarische Closure als “self-invoking function”:
+
+```JavaScript
+let add = (function () {
+    let counter = 0;
+    return function () {counter += 1; return counter}
+})();
+
+add();
+add();
+add();
+```
+
+- Mit diesem Beispiel kann die Counter Variable private gemacht werden.
+
+### Zusammenfassung
+- Zwei Arten von lexical scopes: Die Inneren (function call) und der Äussere (global). Der innere Scope zeigt auf einen Äusseren.
+- Sobald der Code den Zugriff auf eine Variable sucht, prüft er den inneren lexikalen Scope zuerst und erst dann der Äussere (bis zum Globalen).
+- Pro ausgeführte Funktion wird ein lexikaler Scope erstellt. 
+- Der lexikale Scope ist ein Spezifikationsobjekt und kann nicht direkt manipuliert werden. JavaScript Engines optimieren diese (entfernen von nicht benutzten Variabeln, um Memory zu optimieren, etc.)
+
+## Prototype Inheritance
+- Bei der Programmierung wollen wir oft bestimmte Dinge erweitern und wiederverwenden.
+- Prototypische Vererbung ist ein JavaScript Language Feature, welches uns dies ermöglicht.
+
+```JavaScript
+let vehicle = {
+    hasEngine: true
+};
+
+let car = {
+    hasFourWheels: true
+};
+
+car = Object.setPrototypeOf(car, vehicle);
+console.log(car.hasEngine); //Output: true
+console.dir(car);
+```
+
+- Wenn wir ein Property von einem Objekt lesen möchten und dieses nicht vorhanden ist, wird es vom Prototype Objekt gelesen. 
+Dieses Pattern nennt man **“prototypal inheritance”**.
+- Das Property [[Prototype]] ist intern, aber kann via `Object.get|setPrototypeOf / __proto__` gesetzt werden. [siehe](https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Object/getPrototypeOf)
+- `this` wird in jedem Fall vom Objekt verwendet und nicht vom
+Prototype.
+
+## Übungsaufgabe I
+```JavaScript
+let user = {
+    doSth() {
+        if (!this.isPausing) {
+            console.log('I am doing sth.');
+        }
+    },
+    
+    pause() {
+        this.isPausing = true;
+    }
+};
+
+let admin = {
+    name: 'Admin User',
+    __proto__: user
+};
+
+admin.pause();
+console.log(admin.isPausing); //?
+console.log(user.isPausing); //?
+```
+
+## Übungsaufgabe II
+```JavaScript
+let hamster = {
+    stomach: [],
+    eat(food) {
+        this.stomach.push(food);
+    }
+};
+
+let speedy = { __proto__: hamster };
+let lazy = { __proto__: hamster };
+
+speedy.eat('apple');
+console.log( speedy.stomach ); // apple
+// Lazy hat ebenfalls einen Apfel im Magen – wieso? Fixe es.
+// Branch: hamster
+console.log( lazy.stomach ); // apple
+```
+
+## Zusatz: Übungsaufgabe
+Zeichne den Umgang mit den lexikalen Scopes vom folgenden Code auf:
+```JavaScript
+function makeCounter() {
+    let count = 0;
+    return function() {
+        return count++;
+    }
+}
+
+let counter = makeCounter();
+alert(counter());
+alert(counter());
+```
