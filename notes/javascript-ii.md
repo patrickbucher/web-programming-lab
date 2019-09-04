@@ -379,8 +379,8 @@ let admin = {
 };
 
 admin.pause();
-console.log(admin.isPausing); //?
-console.log(user.isPausing); //?
+console.log(admin.isPausing); // true -> Auf admin object wurde pause() aufgerufen und die pause() function wird von user vererbt. 
+console.log(user.isPausing); // undefined -> Auf dem user object wurde pause() nicht aufgerufen, daher ist this.isPausing nicht definiert.
 ```
 
 ## Übungsaufgabe II
@@ -416,3 +416,220 @@ let counter = makeCounter();
 alert(counter());
 alert(counter());
 ```
+
+
+## Promises
+### Problem 
+- Viele Aktionen in JavaScript sind asynchron.
+- Für die Behandlung können Callback-Funktionen verwendet werden.
+
+```JavaScript
+loadScript('myScript1.js', function(error, script) {
+    loadScript('myScript2.js', function(error, script) {
+        loadScript('myScript3.js', function(err, sc){
+            //do sth.
+        }
+    }
+}
+```
+
+### Intro
+- Typischerweise haben wir einen Code der Inhalte produziert und Code, der Inhalte konsumiert.
+- Das Promise Konstrukt bringt die beiden Aspekte zusammen.
+- Der produzierende Code braucht für die Produktion entsprechend Zeit und die Promise stellt den Output entsprechend dem konsumierenden Code zur Verfügung.
+
+[Promise](https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Promise)
+
+### Syntax
+```JavaScript
+let promise = new Promise(function(resolve, reject) {
+    // der produzierende Code, der sobald ausgeführt
+    // wird, wenn die Promise erstellt wird.
+    // z.B.
+    // setTimeout(() => resolve(‘its done.’), 1000);
+    // setTimeout(() => reject(new Error(‘ooops…’)), 2000);
+});
+```
+
+Was ist der Output vom folgenden Code?
+```JavaScript
+let myPromise = new Promise(function(resolve, reject) {
+    resolve(1);
+    setTimeout(() => resolve(2), 1000);
+});
+
+myPromise.then(console.log); // 1 -> then() hört auf das erste Resolve
+myPromise.then(console.log); // loggt nichts, da then() nur einmal auf einem Promise aufgerufen werden kann.
+```
+
+### Chaining 
+```JavaScript
+new Promise(function(resolve, reject) {
+    // producer
+    setTimeout(() => resolve(1), 1000);
+}).then(function(result) {
+    // then 1
+    console.log(result);
+    return ++result;
+}).then(function(result) {
+    // then 2
+    console.log(result);
+});
+```
+
+### Chaining – Was passiert hier?
+```JavaScript
+let promise = new Promise(function(resolve, reject) {
+    setTimeout(() => resolve(1), 1000);
+});
+promise.then(function(result) {
+    console.log(result);
+    return ++result;
+});
+promise.then(function(result) {
+    console.log(result);
+    return ++result;
+});
+```
+
+## Classes
+In JavaScript ab ES6 gibt es das ‘class’ Konstrukt, das nützlich für die objektorientierte Programmierung ist.
+
+```JavaScript
+class MyClass {
+    constructor() {}
+    method1() {}
+    method2() {}
+}
+
+let myObj = new MyClass(); // Neues Objekt
+```
+
+### Beispiel
+```JavaScript
+class Person {
+
+    constructor(name) {
+        this.name = name;
+    }
+
+    sayHello() {
+        console.log(`hello ${this.name}`);
+    }
+}
+
+console.log(new Person('Patrick').sayHello()); // "hello Patrick"
+```
+
+In JavaScript eine Klasse ist eine spezielle Art einer function.
+
+```JavaScript
+class Person {
+
+    constructor(name) {
+        this.name = name;
+    }
+
+    sayHello() {
+        console.log(`hello ${this.name}`);
+    }
+}
+
+console.log(typeof(Person)); // Person : { name : 'Patrick' }, __proto__: Object
+console.dir(Person); // class Person
+```
+
+### Was ist eine Klasse?
+Das class Konstrukt macht die folgenden Dinge:
+1. Erstellt eine function namens Person
+2. Speichert die Methode sayHello im Person.prototype
+
+```JavaScript
+console.log(typeof Person);
+console.log(Person === Person.prototype.constructor);
+console.log(Person.prototype.sayHello);
+console.log(Object.getOwnPropertyNames(Person.prototype));
+console.log(Object.getPrototypeOf(new Person()));
+```
+
+### getters & setters
+```JavaScript
+class Person {
+    
+    constructor(name) {
+        this._name = name;
+    }
+
+    get name() {
+        return this._name;
+    }
+
+    set name(value) {
+        this._name = value;
+    }
+}
+```
+
+### Vererbung
+```JavaScript
+class Person {
+    
+    constructor(name) {this.name = name;}
+
+    sayHello() {
+        console.log(`hello ${this.name}`);
+    }
+}
+
+class Admin extends Person {
+    doAdminTasks () {
+        console.log(`${this.name} doing admin tasks`);
+    }
+    sayHello() {
+        super.sayHello();
+        console.log('hello from admin');
+    }
+}
+
+let myAdmin = new Admin('Patrick');
+myAdmin.doAdminTasks();
+```
+
+## Übungsaufgabe I - Promises
+Erstelle eine Promise auf Basis des folgenden Codes
+- Branch: promise
+```JavaScript
+delay(2000, 'hallo').then(console.log);
+```
+
+## Übungsaufgabe II - Classes
+Schreibe die Person Klasse einem mit puren functions und einmal mit dem class Konstrukt.
+- Branch: classes
+
+```JavaScript
+let person = new Person('Patrick');
+person.sayHello();
+```
+
+## Zusatz: Übungsaufgabe
+- Schreibe eine Uhr die tickt (nach OOP-Prinzipien).
+```JavaScript
+let clock = new Clock('h:m:s');
+clock.start();
+```
+
+- Schreibe eine erweiterte Clock, bei welcher die Präzision (Anzahl ms)
+mitgegeben werden kann.
+```JavaScript
+let extendedClock = new ExtendedClock('h:m:s', 2000);
+extendedClock.start();
+```
+
+## Zusatz: JavaScript Interview Questions
+1. Erkläre die Diffferenz zwischen == und ===?
+2. Welche zwei grundlegenden Arten von Datentypen gibt es in JavaScript?
+3. Für was wird der typeof Operator verwende?
+4. Für was ist der ‘strict’ mode in JavaScript und wie kann er aktiviert werden?
+5. Was ist eine Closure in JavaScript?
+6. Was ist der Unterschied zwischen .call() und .apply()?
+7. Erkläre prototypische Vererbung.
