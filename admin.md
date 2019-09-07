@@ -1,0 +1,3 @@
+- Abgabetermin: 2. Oktober
+- MEP/Präsentation: 5. Oktober
+    - 90 Minuten schriftlich, ohne Unterlagen
